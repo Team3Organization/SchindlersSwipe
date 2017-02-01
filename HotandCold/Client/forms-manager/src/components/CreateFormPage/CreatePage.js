@@ -4,6 +4,7 @@ var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 var FormTemplate = require('./FormTemplate');
+var Fab = require('./Fab');
 var toastr = require('toastr');
 
 var CreatePage = React.createClass({
@@ -50,7 +51,9 @@ var CreatePage = React.createClass({
                 <button className="btn btn-primary btn-md" onClick={this.addNumberPicker}>NumberPicker</button>
                 <br/><br/>
                 <button className="btn dropdown-menu-right" onClick={this.saveForm}>Save</button>
+                <Fab/>
             </div>
+            
         );
     }
 });
