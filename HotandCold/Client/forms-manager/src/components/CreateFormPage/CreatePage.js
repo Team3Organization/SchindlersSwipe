@@ -57,7 +57,7 @@ var CreatePage = React.createClass({
             <div className="jumbotron">
                 <h1>Create A Form</h1>
                 <br/>
-                <button className="btn btn-primary btn-lg" onClick={this.createForm}>Create!</button>
+                <button className="btn btn-primary btn-lg" onClick={this.createForm}>Create</button>
                 
                 <FormTemplate name={this.state.name} formFields={this.state.formFields}/><br/>
                 <button className="btn btn-primary btn-md" onClick={this.addTextBox}>Textbox</button> 
