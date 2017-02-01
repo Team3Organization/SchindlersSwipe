@@ -54,18 +54,18 @@ var CreatePage = React.createClass({
 
     render: function() {
         return (
-            <div className="jumbotron">
-                <h1>Create A Form</h1>
-                <br/>
-                <button className="btn btn-primary btn-lg" onClick={this.createForm}>Create</button>
-                
-                <FormTemplate name={this.state.name} formFields={this.state.formFields}/><br/>
-                <button className="btn btn-primary btn-md" onClick={this.addTextBox}>Textbox</button> 
-                <button className="btn btn-primary btn-md" onClick={this.addNumberPicker}>NumberPicker</button>
-                <button className="btn btn-primary btn-md" onClick={this.addRadioButton}>RadioButton</button>
-                <button className="btn btn-primary btn-md" onClick={this.addUsersDetails}>UserDetails</button>
-                <br/><br/>
-                <button className="btn dropdown-menu-right" onClick={this.saveForm}>Save</button>
+            <div>
+                <h2>Create A Form</h2>
+                <input type="text" placeholder="your form's name"/><br/>
+                <div>
+                    <FormTemplate name={this.state.name} formFields={this.state.formFields}/><br/>
+                    <button className="btn btn-primary btn-md" onClick={this.addTextBox}>Textbox</button> 
+                    <button className="btn btn-primary btn-md" onClick={this.addNumberPicker}>NumberPicker</button>
+                    <button className="btn btn-primary btn-md" onClick={this.addRadioButton}>RadioButton</button>
+                    <button className="btn btn-primary btn-md" onClick={this.addUsersDetails}>UserDetails</button>
+                    <br/><br/>
+                    <button className="btn dropdown-menu-right" onClick={this.saveForm}>Save</button>
+                </div>
             </div>
         );
     }
