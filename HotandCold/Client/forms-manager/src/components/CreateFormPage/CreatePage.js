@@ -149,22 +149,12 @@ var CreatePage = React.createClass({
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
                 <button id="createionNextStep">To The Next Step</button>
-                <nav className="fabcontainer">
-                    <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
-                    <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
-                    <button className="buttons" onClick={this.addDate}>Date</button>
-                    <button className="buttons" onClick={this.addNumberPicker}>Number</button>
-                    <button className="buttons" onClick={this.addTextBox}>Text</button>
-                    <button className="buttons fabMainBtn">+</button>
-                </nav>
+
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.getData}>get</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.postData}>post</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.logState}>log state</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.saveForm}>save form</button>
-=======
->>>>>>> 89f263ba629a6273d0c27ae9707dc2426e738919
             </div>
 
         );

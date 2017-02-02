@@ -11,11 +11,16 @@ var _clone = function(item) {
 
 var FormsApi = {
     getAllTemplates: function() {
-        return _clone(templates);
+        return templates;
     },
 
     getTemplateById: function(id) {
-        var template = _.find(authors, {id: id});
+        var template = _.find(templates, {id: id});
+        return _clone(template);
+    },
+
+    getTemplateByName: function(p_Name) {
+        var template = _.find(templates, {name: p_Name});
         return _clone(template);
     }
 };
