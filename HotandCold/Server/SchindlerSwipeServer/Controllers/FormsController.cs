@@ -18,7 +18,11 @@ namespace SchindlerSwipeServer.Controllers
         // GET api/<controller>/5
         public string Get(int id)
         {
+<<<<<<< HEAD
+            return "valu1";
+=======
             return "value";
+>>>>>>> bc468397198bdb543b4ebba5d9fb47a6b1bbf891
         }
 
         // POST api/<controller>
