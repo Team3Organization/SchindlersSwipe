@@ -1,8 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500);
 
 .fabcontainer {
-  bottom: 0;
-  position: fixed;
+  position: absolute;
   margin: 1em;
   right: 0px;
 }
@@ -113,7 +112,24 @@
   border-color: #585858;
 }
 
-.creationNextStep {
-  left: 36%;
+.demo-card-square.mdl-card {
+  width: 320px;
+  height: 320px;
+}
+.demo-card-square > .mdl-card__title {
+  color: #fff;
+  background:
+    url('../assets/demos/dog.png') bottom right 15% no-repeat #46B6AC;
+}
+
+.userCard {
+  border: solid black 1px;
+  width: 250px;
+  left: 70%;
   position: absolute;
+}
+
+#nextStepBtn {
+  position: fixed;
+  top: 50%;
 }

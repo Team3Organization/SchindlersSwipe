@@ -8,6 +8,10 @@ var Fab = require('./Fab');
 var toastr = require('toastr');
 
 var CreatePage = React.createClass({
+    PropTypes: {
+        myUser: React.PropTypes.string,
+        allUsers: React.PropTypes.array
+    },
     getInitialState: function () {
         return {
             name: "",
@@ -65,25 +69,58 @@ var CreatePage = React.createClass({
         toastr.success('Form saved!');
     },
 
+    moveToNextStep: function() {
+        //$('.fabcontainer').disable();
+        //$('#createdForm').disable();
+
+        // GoToServer and get me
+        this.props.myUser = "chen goren";
+
+        // GoToServer and get all users
+        this.props.allUsers = [];
+    },
+
     render: function () {
         return (
-            <div>
-                <div>
+            <div className="row">            
+                <div id="createdForm" className="col-md-5">
                     <h2>Create A Form</h2>
                     <input type="text" placeholder="your form's name" /><br />
                     <div>
                         <FormTemplate name={this.state.name} formFields={this.state.formFields} /><br />
                     </div>
+
+                    <nav className="fabcontainer">
+                        <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
+                        <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
+                        <button className="buttons" onClick={this.addDate}>Date</button>
+                        <button className="buttons" onClick={this.addNumberPicker}>Number</button>
+                        <button className="buttons" onClick={this.addTextBox}>Text</button>
+                        <button className="buttons fabMainBtn">+</button>
+                    </nav>
                 </div>
-                <button id="createionNextStep">To The Next Step</button>
-                <nav className="fabcontainer">
-                    <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
-                    <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
-                    <button className="buttons" onClick={this.addDate}>Date</button>
-                    <button className="buttons" onClick={this.addNumberPicker}>Number</button>
-                    <button className="buttons" onClick={this.addTextBox}>Text</button>
-                    <button className="buttons fabMainBtn">+</button>
-                </nav>
+               
+                <div className="col-md-2">
+                    <button id="nextStepBtn" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                        To The Next Step
+                    </button>
+                </div>
+
+                <div id="approvalFlowChart" className="col-md-5">
+
+                    <div className="demo-card-wide mdl-card mdl-shadow--2dp">
+                        <div className="mdl-card__title">
+                            <h2 className="mdl-card__title-text">Name:{this.props.myUser}</h2>
+                        </div>
+                        <div className="mdl-card__supporting-text">
+                        </div>
+                        <div className="mdl-card__actions mdl-card--border">
+                            <span className="mdl-chip">
+                                <span className="mdl-chip__text">Roye W</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         );
