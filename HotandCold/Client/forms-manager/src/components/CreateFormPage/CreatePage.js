@@ -6,6 +6,7 @@ var Link = Router.Link;
 var FormTemplate = require('./FormTemplate');
 var Fab = require('./Fab');
 var toastr = require('toastr');
+var HttpClient = require('../common/httpClient');
 
 var CreatePage = React.createClass({
     getInitialState: function () {
@@ -60,9 +61,36 @@ var CreatePage = React.createClass({
         this.setState({ name: formName });
     },
 
-    saveForm: function () {
+    logState: function () {
         console.log(this.state);
-        toastr.success('Form saved!');
+    },
+
+    getData: function() {
+        var client = new HttpClient();
+
+        client.get('http://schindlerswipe.azurewebsites.net/api/forms', function(response) {
+            console.log(JSON.parse(response));
+        });
+    },
+
+    postData: function() {
+        var client = new HttpClient();
+
+        client.post('http://schindlerswipe.azurewebsites.net/api/forms', null, function(response) {
+            console.log(response);
+        });
+    },
+
+    onFormNameChanged: function(event) {
+        this.setState({name: event.target.value});
+    },
+
+    saveForm: function() {
+        var client = new HttpClient();
+
+        client.post('http://schindlerswipe.azurewebsites.net/api/forms', null, function(response) {
+            console.log(response);
+        });
     },
 
     render: function () {
@@ -70,7 +98,7 @@ var CreatePage = React.createClass({
             <div>
                 <div>
                     <h2>Create A Form</h2>
-                    <input type="text" placeholder="your form's name" /><br />
+                    <input type="text" placeholder="your form's name" onChange={this.onFormNameChanged}/><br />
                     <div>
                         <FormTemplate name={this.state.name} formFields={this.state.formFields} /><br />
                     </div>
@@ -84,6 +112,9 @@ var CreatePage = React.createClass({
                     <button className="buttons" onClick={this.addTextBox}>Text</button>
                     <button className="buttons fabMainBtn">+</button>
                 </nav>
+                <button className="btn btn-primary btn-lg container-fluid" onClick={this.getData}>get</button>
+                <button className="btn btn-primary btn-lg container-fluid" onClick={this.postData}>post</button>
+                <button className="btn btn-primary btn-lg container-fluid" onClick={this.logState}>log state</button>
             </div>
 
         );
