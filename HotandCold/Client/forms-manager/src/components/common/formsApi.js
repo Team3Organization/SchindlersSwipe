@@ -3,6 +3,7 @@
 //This file is mocking a web API by hitting hard coded data.
 var templates = require('./formsHardcodedData').templates;
 var _ = require('lodash');
+var HttpClient = require('./httpClient');
 
 
 var _clone = function(item) {
@@ -11,11 +12,16 @@ var _clone = function(item) {
 
 var FormsApi = {
     getAllTemplates: function() {
-        return templates;
+        //return templates;
+        var client = new HttpClient();
+
+        client.get('http://schindlerswipe.azurewebsites.net/api/General/GetAllFormTemplates', function(response) {
+            return JSON.parse(response);
+        });
     },
 
     getTemplateById: function(id) {
-        var template = _.find(templates, {id: id});
+        var template = _.find(templates, {_id: id});
         return _clone(template);
     },
 
