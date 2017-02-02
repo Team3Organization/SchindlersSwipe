@@ -15,12 +15,15 @@ var config = {
     devBaseUrl: 'http://localhost',
     paths: {
         html: './src/*.html',
-        js: './src/**/*.js',
+        js: ['./src/**/*.js',
+             'node_modules/jquery/dist/jquery.js',
+             'node_modules/material-design-lite/material.min.js'],
         images: './src/images/*',
         css: [
             'node_modules/bootstrap/dist/css/bootstrap.min.css',
             'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
             'node_modules/toastr/build/toastr.css',
+            'node_modules/material-design-lite/material.min.css',
             './src/style.css'
         ],
         dist: './dist',

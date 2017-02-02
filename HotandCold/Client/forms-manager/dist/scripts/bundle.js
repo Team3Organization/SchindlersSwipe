@@ -33647,6 +33647,10 @@ var Fab = require('./Fab');
 var toastr = require('toastr');
 
 var CreatePage = React.createClass({displayName: "CreatePage",
+    PropTypes: {
+        myUser: React.PropTypes.string,
+        allUsers: React.PropTypes.array
+    },
     getInitialState: function () {
         return {
             name: "",
@@ -33684,8 +33688,13 @@ var CreatePage = React.createClass({displayName: "CreatePage",
     addRadioButton: function () {
         var fieldName = prompt("please enter your field's name:");
         var radioButtonOptions = prompt("pleasr enter the options, seperated with commas:").split(',');
-        this.state.formFields.push({ name: fieldName, type: 'radio', options: radioButtonOptions });
-        this.setState({ formFields: this.state.formFields });
+        this.state.formFields.push({ 
+            name: fieldName, 
+            type: 'radio', 
+            extraData: [
+                { options: radioButtonOptions }
+        ]});
+        this.setState({formFields: this.state.formFields});
         toastr.success('radio button added succesfully!');
     },
 
@@ -33699,24 +33708,57 @@ var CreatePage = React.createClass({displayName: "CreatePage",
         toastr.success('Form saved!');
     },
 
+    moveToNextStep: function() {
+        //$('.fabcontainer').disable();
+        //$('#createdForm').disable();
+
+        // GoToServer and get me
+        this.props.myUser = "chen goren";
+
+        // GoToServer and get all users
+        this.props.allUsers = [];
+    },
+
     render: function () {
         return (
-            React.createElement("div", null, 
-                React.createElement("div", null, 
+            React.createElement("div", {className: "row"}, 
+                React.createElement("div", {id: "createdForm", className: "col-md-5"}, 
                     React.createElement("h2", null, "Create A Form"), 
                     React.createElement("input", {type: "text", placeholder: "your form's name"}), React.createElement("br", null), 
                     React.createElement("div", null, 
                         React.createElement(FormTemplate, {name: this.state.name, formFields: this.state.formFields}), React.createElement("br", null)
+                    ), 
+
+                    React.createElement("nav", {className: "fabcontainer"}, 
+                        React.createElement("button", {className: "buttons", onClick: this.addUsersDetails}, "UserDetails"), 
+                        React.createElement("button", {className: "buttons", onClick: this.addRadioButton}, "RadioButton"), 
+                        React.createElement("button", {className: "buttons", onClick: this.addDate}, "Date"), 
+                        React.createElement("button", {className: "buttons", onClick: this.addNumberPicker}, "Number"), 
+                        React.createElement("button", {className: "buttons", onClick: this.addTextBox}, "Text"), 
+                        React.createElement("button", {className: "buttons fabMainBtn"}, "+")
                     )
                 ), 
-                React.createElement("button", {id: "createionNextStep"}, "To The Next Step"), 
-                React.createElement("nav", {className: "fabcontainer"}, 
-                    React.createElement("button", {className: "buttons", onClick: this.addUsersDetails}, "UserDetails"), 
-                    React.createElement("button", {className: "buttons", onClick: this.addRadioButton}, "RadioButton"), 
-                    React.createElement("button", {className: "buttons", onClick: this.addDate}, "Date"), 
-                    React.createElement("button", {className: "buttons", onClick: this.addNumberPicker}, "Number"), 
-                    React.createElement("button", {className: "buttons", onClick: this.addTextBox}, "Text"), 
-                    React.createElement("button", {className: "buttons fabMainBtn"}, "+")
+               
+                React.createElement("div", {className: "col-md-2"}, 
+                    React.createElement("button", {id: "nextStepBtn", className: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"}, 
+                        "To The Next Step"
+                    )
+                ), 
+
+                React.createElement("div", {id: "approvalFlowChart", className: "col-md-5"}, 
+
+                    React.createElement("div", {className: "demo-card-wide mdl-card mdl-shadow--2dp"}, 
+                        React.createElement("div", {className: "mdl-card__title"}, 
+                            React.createElement("h2", {className: "mdl-card__title-text"}, "Name:", this.props.myUser)
+                        ), 
+                        React.createElement("div", {className: "mdl-card__supporting-text"}
+                        ), 
+                        React.createElement("div", {className: "mdl-card__actions mdl-card--border"}, 
+                            React.createElement("span", {className: "mdl-chip"}, 
+                                React.createElement("span", {className: "mdl-chip__text"}, "Roye W")
+                            )
+                        )
+                    )
                 )
             )
 
@@ -33770,7 +33812,7 @@ var FormTemplate = React.createClass({displayName: "FormTemplate",
                 )
                 );
             case "radio":
-                var radioOptions = field.options.map(function (option) {
+                var radioOptions = field.extraData[0].options.map(function (option) {
                     return { radioGroup: field.name, value: option}
                 });
                 var radioOptionsComponent = radioOptions.map(function (option, i) {
