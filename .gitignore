@@ -3,3 +3,5 @@
 ################################################################################
 
 /HotandCold/Server/SchindlerSwipeServer/obj/Debug
+/HotandCold/Server/SchindlerSwipeServer/bin
+/HotandCold/Server/SchindlerSwipeServer/obj/Release
