@@ -62,6 +62,7 @@ var CreatePage = React.createClass({
 
     render: function() {
         return (
+<<<<<<< HEAD
             <div className="jumbotron">
                 <h1>Create A Form</h1>
                 <br/>
@@ -78,6 +79,14 @@ var CreatePage = React.createClass({
                     <button className="buttons" onClick={this.addTextBox}>Text</button>
                     <button className="buttons fabMainBtn">+</button>
                 </nav>
+=======
+            <div>
+                <h2>Create A Form</h2>
+                <input type="text" placeholder="your form's name"/><br/>
+                <div>
+                    <FormTemplate name={this.state.name} formFields={this.state.formFields}/><br/>
+                </div>
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
             </div>
             
         );

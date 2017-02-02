@@ -33643,18 +33643,35 @@ var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 var FormTemplate = require('./FormTemplate');
+<<<<<<< HEAD
 var Fab = require('./Fab');
+=======
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 var toastr = require('toastr');
 
 var CreatePage = React.createClass({displayName: "CreatePage",
     getInitialState: function () {
         return {
+<<<<<<< HEAD
             formFields: [
                 { name: "Moshe", type: "text"}
             ]
         };
     },
 
+=======
+            name: "",
+            formFields: []
+        };
+    },
+
+    addUsersDetails: function() {
+        this.state.formFields.push({type: "UserDetails"});
+        this.setState({formFields: this.state.formFields});
+        toastr.success('User Details added succesfully!');
+    },
+
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
     addTextBox: function() {
         var fieldName = prompt("please enter your field's name:");
         this.state.formFields.push({ name: fieldName, type: 'text' });
@@ -33666,6 +33683,7 @@ var CreatePage = React.createClass({displayName: "CreatePage",
         var fieldName = prompt("please enter your field's name:");
         this.state.formFields.push({ name: fieldName, type: 'number' });
         this.setState({formFields: this.state.formFields});
+<<<<<<< HEAD
         toastr.success('Number Picker added!');
     },
 
@@ -33674,11 +33692,32 @@ var CreatePage = React.createClass({displayName: "CreatePage",
     },
 
     saveForm: function() {
+=======
+        toastr.success('Number Picker added succesfully!');
+    },
+
+    addRadioButton: function() {
+        var fieldName = prompt("please enter your field's name:");
+        var radioButtonOptions = prompt("pleasr enter the options, seperated with commas:").split(',');
+        this.state.formFields.push({ name: fieldName, type: 'radio', options: radioButtonOptions });
+        this.setState({formFields: this.state.formFields});
+        toastr.success('radio button added succesfully!');
+    },
+
+    createForm: function() {
+        var formName = prompt("please enter your form's name:");
+        this.setState({name: formName});
+    },
+
+    saveForm: function() {
+        console.log(this.state);
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
         toastr.success('Form saved!');
     },
 
     render: function() {
         return (
+<<<<<<< HEAD
             React.createElement("div", {className: "jumbotron"}, 
                 React.createElement("h1", null, "Create A Form"), 
                 React.createElement("br", null), 
@@ -33691,6 +33730,20 @@ var CreatePage = React.createClass({displayName: "CreatePage",
                 React.createElement("br", null), React.createElement("br", null), 
                 React.createElement("button", {className: "btn dropdown-menu-right", onClick: this.saveForm}, "Save"), 
                 React.createElement(Fab, null)
+=======
+            React.createElement("div", null, 
+                React.createElement("h2", null, "Create A Form"), 
+                React.createElement("input", {type: "text", placeholder: "your form's name"}), React.createElement("br", null), 
+                React.createElement("div", null, 
+                    React.createElement(FormTemplate, {name: this.state.name, formFields: this.state.formFields}), React.createElement("br", null), 
+                    React.createElement("button", {className: "btn btn-primary btn-md", onClick: this.addTextBox}, "Textbox"), 
+                    React.createElement("button", {className: "btn btn-primary btn-md", onClick: this.addNumberPicker}, "NumberPicker"), 
+                    React.createElement("button", {className: "btn btn-primary btn-md", onClick: this.addRadioButton}, "RadioButton"), 
+                    React.createElement("button", {className: "btn btn-primary btn-md", onClick: this.addUsersDetails}, "UserDetails"), 
+                    React.createElement("br", null), React.createElement("br", null), 
+                    React.createElement("button", {className: "btn dropdown-menu-right", onClick: this.saveForm}, "Save")
+                )
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
             )
             
         );
@@ -33699,6 +33752,7 @@ var CreatePage = React.createClass({displayName: "CreatePage",
 
 module.exports = CreatePage;
 
+<<<<<<< HEAD
 },{"./Fab":202,"./FormTemplate":203,"react":199,"react-router":29,"toastr":200}],202:[function(require,module,exports){
 "use strict";
 
@@ -33719,10 +33773,13 @@ var Fab = React.createClass({displayName: "Fab",
 
 module.exports = Fab;
 },{"react":199}],203:[function(require,module,exports){
+=======
+},{"./FormTemplate":202,"react":199,"react-router":29,"toastr":200}],202:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
-var TextInput = require('../common/textInput');
+var UserDetails = require('../common/userDetails');
 
 var FormTemplate = React.createClass({displayName: "FormTemplate",
     PropTypes: {
@@ -33731,6 +33788,7 @@ var FormTemplate = React.createClass({displayName: "FormTemplate",
     },
 
     createFields: function(field, i) {
+<<<<<<< HEAD
         return (
             React.createElement("div", {key: i}, 
                 React.createElement("label", null, field.name, ": "), 
@@ -33738,12 +33796,49 @@ var FormTemplate = React.createClass({displayName: "FormTemplate",
                 React.createElement("br", null)
             )
         );
+=======
+        switch (field.type) {
+            case "text":
+            case "number":
+                return (
+                React.createElement("div", {key: i}, 
+                    React.createElement("label", null, field.name, ": "), 
+                    React.createElement("input", {type: field.type}), 
+                    React.createElement("br", null)
+                )
+                );
+            case "radio":
+                var radioOptions = field.options.map(function (option) {
+                    return { radioGroup: field.name, value: option}
+                });
+                var radioOptionsComponent = radioOptions.map(function (option, i) {
+                    return (
+                        React.createElement("div", {key: i}, 
+                            React.createElement("input", {type: "radio", name: option.radioGroup, value: option.value}), 
+                            React.createElement("span", null, option.value), React.createElement("br", null)
+                        )
+                    );
+                });
+                return (
+                    React.createElement("div", null, 
+                        React.createElement("label", null, field.name, ": "), 
+                        radioOptionsComponent
+                    )
+                );
+            case "UserDetails":
+                return React.createElement(UserDetails, {key: i})
+        }
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
     },
 
     render: function () {
         return(
             React.createElement("form", null, 
+<<<<<<< HEAD
                 React.createElement("h2", null, "Tofes Neshek"), 
+=======
+                React.createElement("h2", null, this.props.name), 
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
                 React.createElement("br", null), 
                 this.props.formFields.map(this.createFields)
             )
@@ -33753,7 +33848,11 @@ var FormTemplate = React.createClass({displayName: "FormTemplate",
 
 module.exports = FormTemplate;
 
+<<<<<<< HEAD
 },{"../common/textInput":208,"react":199}],204:[function(require,module,exports){
+=======
+},{"../common/userDetails":207,"react":199}],203:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
@@ -33773,7 +33872,11 @@ var FillPage = React.createClass({displayName: "FillPage",
 
 module.exports = FillPage;
 
+<<<<<<< HEAD
 },{"react":199,"react-router":29}],205:[function(require,module,exports){
+=======
+},{"react":199,"react-router":29}],204:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
@@ -33793,7 +33896,11 @@ var SignPage = React.createClass({displayName: "SignPage",
 
 module.exports = SignPage;
 
+<<<<<<< HEAD
 },{"react":199,"react-router":29}],206:[function(require,module,exports){
+=======
+},{"react":199,"react-router":29}],205:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 /*eslint-disable strict*/
 
 $ = jQuery = require('jquery');
@@ -33817,7 +33924,11 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
+<<<<<<< HEAD
 },{"./common/header":207,"jquery":3,"react":199,"react-router":29}],207:[function(require,module,exports){
+=======
+},{"./common/header":206,"jquery":3,"react":199,"react-router":29}],206:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
@@ -33829,10 +33940,13 @@ var Header = React.createClass({displayName: "Header",
         return(
             React.createElement("nav", {className: "navbar navbar-default"}, 
                 React.createElement("div", {className: "container-fluid"}, 
+                    React.createElement(Link, {to: "/", className: "navbar-brand"}, 
+                        React.createElement("img", {src: "images/form-logo.png"})
+                    ), 
                     React.createElement("ul", {className: "nav navbar-nav"}, 
                         React.createElement("li", null, React.createElement(Link, {to: "create"}, "Create")), 
-                        React.createElement("li", null, React.createElement(Link, {to: "sign"}, "Sign")), 
-                        React.createElement("li", null, React.createElement(Link, {to: "fill"}, "Fill"))
+                        React.createElement("li", null, React.createElement(Link, {to: "fill"}, "Fill")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "sign"}, "Sign"))
                     )
                 )
             )
@@ -33842,48 +33956,61 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header;
 
+<<<<<<< HEAD
 },{"react":199,"react-router":29}],208:[function(require,module,exports){
+=======
+},{"react":199,"react-router":29}],207:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
 
-var textInput = React.createClass({displayName: "textInput",
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        label: React.PropTypes.string.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        placeholder: React.PropTypes.string,
-        value: React.PropTypes.string,
-        error: React.PropTypes.string
-    },
-
+var UserDetails = React.createClass({displayName: "UserDetails",
     render: function () {
-        var wrapperClass = "form-group";
-        if(this.props.error && this.props.error.length > 0) {
-            wrapperClass += ' ' + 'has-error';
-        }
-
-        return (
-            React.createElement("div", {className: wrapperClass}, 
-                React.createElement("label", {htmlFor: this.props.name}, this.props.label), 
-                React.createElement("div", {className: "field"}, 
-                    React.createElement("input", {type: "text", 
-                    name: this.props.name, 
-                    className: "form-control", 
-                    placeholder: this.props.placeholder, 
-                    ref: this.props.name, 
-                    value: this.props.value, 
-                    onChange: this.props.onChange}), 
-                    React.createElement("div", {className: "input"}, this.props.error)
-                )
+        return(
+            React.createElement("div", null, 
+                React.createElement("label", null, "ID: "), 
+                React.createElement("input", {type: "text", placeholder: "12345678"}), 
+                React.createElement("label", null, "First Name: "), 
+                React.createElement("input", {type: "text", placeholder: "moshe"}), 
+                React.createElement("label", null, "Last Name: "), 
+                React.createElement("input", {type: "text", placeholder: "katz"}), 
+                React.createElement("br", null)
             )
         );
     }
 });
 
-module.exports = textInput;
+module.exports = UserDetails;
 
+},{"react":199}],208:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
+
+var HomePage = React.createClass({displayName: "HomePage",
+    render: function() {
+        return (
+            React.createElement("div", {className: "jumbotron"}, 
+                React.createElement("h1", null, "Welcome to Forms Manager"), 
+                React.createElement("h2", null, "What would you like to do?"), 
+                React.createElement(Link, {to: "create", className: "btn btn-primary btn-lg container-fluid"}, "Create"), 
+                React.createElement(Link, {to: "fill", className: "btn btn-primary btn-lg container-fluid"}, "Fill"), 
+                React.createElement(Link, {to: "sign", className: "btn btn-primary btn-lg container-fluid"}, "Sign")
+            )
+        );
+    }
+});
+
+module.exports = HomePage;
+
+<<<<<<< HEAD
 },{"react":199}],209:[function(require,module,exports){
+=======
+},{"react":199,"react-router":29}],209:[function(require,module,exports){
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
 "use strict";
 
 var React = require('react');
@@ -33895,7 +34022,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
             React.createElement("div", null, 
                 React.createElement("h1", null, "Page Not Found"), 
                 React.createElement("p", null, "Whoops! Sorry, there is nothing to see here."), 
-                React.createElement("p", null, React.createElement(Link, {to: ""}, "Back to Home"))
+                React.createElement("p", null, React.createElement(Link, {to: "create"}, "Back Home"))
             )
         );
     }
@@ -33928,7 +34055,8 @@ var NotFoundRoute = Router.NotFoundRoute;
 
 var routes = (
     React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
-        React.createElement(DefaultRoute, {name: "create", handler: require('./components/CreateFormPage/CreatePage')}), 
+        React.createElement(DefaultRoute, {name: "home", handler: require('./components/homePage')}), 
+        React.createElement(Route, {name: "create", handler: require('./components/CreateFormPage/CreatePage')}), 
         React.createElement(Route, {name: "sign", handler: require('./components/SignFormPage/SignPage')}), 
         React.createElement(Route, {name: "fill", handler: require('./components/FillFormPage/FillPage')}), 
         React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')})
@@ -33937,4 +34065,8 @@ var routes = (
 
 module.exports = routes;
 
+<<<<<<< HEAD
 },{"./components/CreateFormPage/CreatePage":201,"./components/FillFormPage/FillPage":204,"./components/SignFormPage/SignPage":205,"./components/app":206,"./components/notFoundPage":209,"react":199,"react-router":29}]},{},[210]);
+=======
+},{"./components/CreateFormPage/CreatePage":201,"./components/FillFormPage/FillPage":203,"./components/SignFormPage/SignPage":204,"./components/app":205,"./components/homePage":208,"./components/notFoundPage":209,"react":199,"react-router":29}]},{},[210]);
+>>>>>>> 8a593b6e931ac8fc64a2815441dc4f96ea411a97
