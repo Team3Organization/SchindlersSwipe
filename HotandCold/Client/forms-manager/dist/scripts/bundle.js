@@ -33200,67 +33200,604 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":72}],200:[function(require,module,exports){
+/*
+ * Toastr
+ * Copyright 2012-2015
+ * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+ * All Rights Reserved.
+ * Use, reproduction, distribution, and modification of this code is subject to the terms and
+ * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+ *
+ * ARIA Support: Greta Krafsig
+ *
+ * Project: https://github.com/CodeSeven/toastr
+ */
+/* global define */
+; (function (define) {
+    define(['jquery'], function ($) {
+        return (function () {
+            var $container;
+            var listener;
+            var toastId = 0;
+            var toastType = {
+                error: 'error',
+                info: 'info',
+                success: 'success',
+                warning: 'warning'
+            };
+
+            var toastr = {
+                clear: clear,
+                remove: remove,
+                error: error,
+                getContainer: getContainer,
+                info: info,
+                options: {},
+                subscribe: subscribe,
+                success: success,
+                version: '2.1.2',
+                warning: warning
+            };
+
+            var previousToast;
+
+            return toastr;
+
+            ////////////////
+
+            function error(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.error,
+                    iconClass: getOptions().iconClasses.error,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function getContainer(options, create) {
+                if (!options) { options = getOptions(); }
+                $container = $('#' + options.containerId);
+                if ($container.length) {
+                    return $container;
+                }
+                if (create) {
+                    $container = createContainer(options);
+                }
+                return $container;
+            }
+
+            function info(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.info,
+                    iconClass: getOptions().iconClasses.info,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function subscribe(callback) {
+                listener = callback;
+            }
+
+            function success(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.success,
+                    iconClass: getOptions().iconClasses.success,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function warning(message, title, optionsOverride) {
+                return notify({
+                    type: toastType.warning,
+                    iconClass: getOptions().iconClasses.warning,
+                    message: message,
+                    optionsOverride: optionsOverride,
+                    title: title
+                });
+            }
+
+            function clear($toastElement, clearOptions) {
+                var options = getOptions();
+                if (!$container) { getContainer(options); }
+                if (!clearToast($toastElement, options, clearOptions)) {
+                    clearContainer(options);
+                }
+            }
+
+            function remove($toastElement) {
+                var options = getOptions();
+                if (!$container) { getContainer(options); }
+                if ($toastElement && $(':focus', $toastElement).length === 0) {
+                    removeToast($toastElement);
+                    return;
+                }
+                if ($container.children().length) {
+                    $container.remove();
+                }
+            }
+
+            // internal functions
+
+            function clearContainer (options) {
+                var toastsToClear = $container.children();
+                for (var i = toastsToClear.length - 1; i >= 0; i--) {
+                    clearToast($(toastsToClear[i]), options);
+                }
+            }
+
+            function clearToast ($toastElement, options, clearOptions) {
+                var force = clearOptions && clearOptions.force ? clearOptions.force : false;
+                if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
+                    $toastElement[options.hideMethod]({
+                        duration: options.hideDuration,
+                        easing: options.hideEasing,
+                        complete: function () { removeToast($toastElement); }
+                    });
+                    return true;
+                }
+                return false;
+            }
+
+            function createContainer(options) {
+                $container = $('<div/>')
+                    .attr('id', options.containerId)
+                    .addClass(options.positionClass)
+                    .attr('aria-live', 'polite')
+                    .attr('role', 'alert');
+
+                $container.appendTo($(options.target));
+                return $container;
+            }
+
+            function getDefaults() {
+                return {
+                    tapToDismiss: true,
+                    toastClass: 'toast',
+                    containerId: 'toast-container',
+                    debug: false,
+
+                    showMethod: 'fadeIn', //fadeIn, slideDown, and show are built into jQuery
+                    showDuration: 300,
+                    showEasing: 'swing', //swing and linear are built into jQuery
+                    onShown: undefined,
+                    hideMethod: 'fadeOut',
+                    hideDuration: 1000,
+                    hideEasing: 'swing',
+                    onHidden: undefined,
+                    closeMethod: false,
+                    closeDuration: false,
+                    closeEasing: false,
+
+                    extendedTimeOut: 1000,
+                    iconClasses: {
+                        error: 'toast-error',
+                        info: 'toast-info',
+                        success: 'toast-success',
+                        warning: 'toast-warning'
+                    },
+                    iconClass: 'toast-info',
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
+                    titleClass: 'toast-title',
+                    messageClass: 'toast-message',
+                    escapeHtml: false,
+                    target: 'body',
+                    closeHtml: '<button type="button">&times;</button>',
+                    newestOnTop: true,
+                    preventDuplicates: false,
+                    progressBar: false
+                };
+            }
+
+            function publish(args) {
+                if (!listener) { return; }
+                listener(args);
+            }
+
+            function notify(map) {
+                var options = getOptions();
+                var iconClass = map.iconClass || options.iconClass;
+
+                if (typeof (map.optionsOverride) !== 'undefined') {
+                    options = $.extend(options, map.optionsOverride);
+                    iconClass = map.optionsOverride.iconClass || iconClass;
+                }
+
+                if (shouldExit(options, map)) { return; }
+
+                toastId++;
+
+                $container = getContainer(options, true);
+
+                var intervalId = null;
+                var $toastElement = $('<div/>');
+                var $titleElement = $('<div/>');
+                var $messageElement = $('<div/>');
+                var $progressElement = $('<div/>');
+                var $closeElement = $(options.closeHtml);
+                var progressBar = {
+                    intervalId: null,
+                    hideEta: null,
+                    maxHideTime: null
+                };
+                var response = {
+                    toastId: toastId,
+                    state: 'visible',
+                    startTime: new Date(),
+                    options: options,
+                    map: map
+                };
+
+                personalizeToast();
+
+                displayToast();
+
+                handleEvents();
+
+                publish(response);
+
+                if (options.debug && console) {
+                    console.log(response);
+                }
+
+                return $toastElement;
+
+                function escapeHtml(source) {
+                    if (source == null)
+                        source = "";
+
+                    return new String(source)
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                }
+
+                function personalizeToast() {
+                    setIcon();
+                    setTitle();
+                    setMessage();
+                    setCloseButton();
+                    setProgressBar();
+                    setSequence();
+                }
+
+                function handleEvents() {
+                    $toastElement.hover(stickAround, delayedHideToast);
+                    if (!options.onclick && options.tapToDismiss) {
+                        $toastElement.click(hideToast);
+                    }
+
+                    if (options.closeButton && $closeElement) {
+                        $closeElement.click(function (event) {
+                            if (event.stopPropagation) {
+                                event.stopPropagation();
+                            } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
+                                event.cancelBubble = true;
+                            }
+                            hideToast(true);
+                        });
+                    }
+
+                    if (options.onclick) {
+                        $toastElement.click(function (event) {
+                            options.onclick(event);
+                            hideToast();
+                        });
+                    }
+                }
+
+                function displayToast() {
+                    $toastElement.hide();
+
+                    $toastElement[options.showMethod](
+                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
+                    );
+
+                    if (options.timeOut > 0) {
+                        intervalId = setTimeout(hideToast, options.timeOut);
+                        progressBar.maxHideTime = parseFloat(options.timeOut);
+                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+                        if (options.progressBar) {
+                            progressBar.intervalId = setInterval(updateProgress, 10);
+                        }
+                    }
+                }
+
+                function setIcon() {
+                    if (map.iconClass) {
+                        $toastElement.addClass(options.toastClass).addClass(iconClass);
+                    }
+                }
+
+                function setSequence() {
+                    if (options.newestOnTop) {
+                        $container.prepend($toastElement);
+                    } else {
+                        $container.append($toastElement);
+                    }
+                }
+
+                function setTitle() {
+                    if (map.title) {
+                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
+                        $toastElement.append($titleElement);
+                    }
+                }
+
+                function setMessage() {
+                    if (map.message) {
+                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
+                        $toastElement.append($messageElement);
+                    }
+                }
+
+                function setCloseButton() {
+                    if (options.closeButton) {
+                        $closeElement.addClass('toast-close-button').attr('role', 'button');
+                        $toastElement.prepend($closeElement);
+                    }
+                }
+
+                function setProgressBar() {
+                    if (options.progressBar) {
+                        $progressElement.addClass('toast-progress');
+                        $toastElement.prepend($progressElement);
+                    }
+                }
+
+                function shouldExit(options, map) {
+                    if (options.preventDuplicates) {
+                        if (map.message === previousToast) {
+                            return true;
+                        } else {
+                            previousToast = map.message;
+                        }
+                    }
+                    return false;
+                }
+
+                function hideToast(override) {
+                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
+                    var duration = override && options.closeDuration !== false ?
+                        options.closeDuration : options.hideDuration;
+                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
+                    if ($(':focus', $toastElement).length && !override) {
+                        return;
+                    }
+                    clearTimeout(progressBar.intervalId);
+                    return $toastElement[method]({
+                        duration: duration,
+                        easing: easing,
+                        complete: function () {
+                            removeToast($toastElement);
+                            if (options.onHidden && response.state !== 'hidden') {
+                                options.onHidden();
+                            }
+                            response.state = 'hidden';
+                            response.endTime = new Date();
+                            publish(response);
+                        }
+                    });
+                }
+
+                function delayedHideToast() {
+                    if (options.timeOut > 0 || options.extendedTimeOut > 0) {
+                        intervalId = setTimeout(hideToast, options.extendedTimeOut);
+                        progressBar.maxHideTime = parseFloat(options.extendedTimeOut);
+                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+                    }
+                }
+
+                function stickAround() {
+                    clearTimeout(intervalId);
+                    progressBar.hideEta = 0;
+                    $toastElement.stop(true, true)[options.showMethod](
+                        {duration: options.showDuration, easing: options.showEasing}
+                    );
+                }
+
+                function updateProgress() {
+                    var percentage = ((progressBar.hideEta - (new Date().getTime())) / progressBar.maxHideTime) * 100;
+                    $progressElement.width(percentage + '%');
+                }
+            }
+
+            function getOptions() {
+                return $.extend({}, getDefaults(), toastr.options);
+            }
+
+            function removeToast($toastElement) {
+                if (!$container) { $container = getContainer(); }
+                if ($toastElement.is(':visible')) {
+                    return;
+                }
+                $toastElement.remove();
+                $toastElement = null;
+                if ($container.children().length === 0) {
+                    $container.remove();
+                    previousToast = undefined;
+                }
+            }
+
+        })();
+    });
+}(typeof define === 'function' && define.amd ? define : function (deps, factory) {
+    if (typeof module !== 'undefined' && module.exports) { //Node
+        module.exports = factory(require('jquery'));
+    } else {
+        window.toastr = factory(window.jQuery);
+    }
+}));
+
+},{"jquery":3}],201:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 var FormTemplate = require('./FormTemplate');
+var Fab = require('./Fab');
+var toastr = require('toastr');
 
 var CreatePage = React.createClass({displayName: "CreatePage",
-    render: function() {
+    getInitialState: function () {
+        return {
+            name: "",
+            formFields: []
+        };
+    },
+
+    addUsersDetails: function () {
+        this.state.formFields.push({ type: "UserDetails" });
+        this.setState({ formFields: this.state.formFields });
+        toastr.success('User Details added succesfully!');
+    },
+
+    addTextBox: function () {
+        var fieldName = prompt("please enter your field's name:");
+        this.state.formFields.push({ name: fieldName, type: 'text' });
+        this.setState({ formFields: this.state.formFields });
+        toastr.success('Textbox added succesfully!');
+    },
+
+    addDate: function () {
+        var fieldName = prompt("please enter your field's name:");
+        this.state.formFields.push({ name: fieldName, type: 'date' });
+        this.setState({ formFields: this.state.formFields });
+        toastr.success('Date added succesfully!');
+    },
+
+    addNumberPicker: function () {
+        var fieldName = prompt("please enter your field's name:");
+        this.state.formFields.push({ name: fieldName, type: 'number' });
+        this.setState({ formFields: this.state.formFields });
+        toastr.success('Number Picker added succesfully!');
+    },
+
+    addRadioButton: function () {
+        var fieldName = prompt("please enter your field's name:");
+        var radioButtonOptions = prompt("pleasr enter the options, seperated with commas:").split(',');
+        this.state.formFields.push({ name: fieldName, type: 'radio', options: radioButtonOptions });
+        this.setState({ formFields: this.state.formFields });
+        toastr.success('radio button added succesfully!');
+    },
+
+    createForm: function () {
+        var formName = prompt("please enter your form's name:");
+        this.setState({ name: formName });
+    },
+
+    saveForm: function () {
+        console.log(this.state);
+        toastr.success('Form saved!');
+    },
+
+    render: function () {
         return (
-            React.createElement("div", {className: "jumbotron"}, 
-                React.createElement("h1", null, "Create A Form"), 
-                React.createElement(FormTemplate, null)
+            React.createElement("div", null, 
+                React.createElement("div", null, 
+                    React.createElement("h2", null, "Create A Form"), 
+                    React.createElement("input", {type: "text", placeholder: "your form's name"}), React.createElement("br", null), 
+                    React.createElement("div", null, 
+                        React.createElement(FormTemplate, {name: this.state.name, formFields: this.state.formFields}), React.createElement("br", null)
+                    )
+                ), 
+                React.createElement("button", {id: "createionNextStep"}, "To The Next Step"), 
+                React.createElement("nav", {className: "fabcontainer"}, 
+                    React.createElement("button", {className: "buttons", onClick: this.addUsersDetails}, "UserDetails"), 
+                    React.createElement("button", {className: "buttons", onClick: this.addRadioButton}, "RadioButton"), 
+                    React.createElement("button", {className: "buttons", onClick: this.addDate}, "Date"), 
+                    React.createElement("button", {className: "buttons", onClick: this.addNumberPicker}, "Number"), 
+                    React.createElement("button", {className: "buttons", onClick: this.addTextBox}, "Text"), 
+                    React.createElement("button", {className: "buttons fabMainBtn"}, "+")
+                )
             )
+
         );
     }
 });
 
 module.exports = CreatePage;
 
-},{"./FormTemplate":201,"react":199,"react-router":29}],201:[function(require,module,exports){
+},{"./Fab":202,"./FormTemplate":203,"react":199,"react-router":29,"toastr":200}],202:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
-var TextInput = require('../common/textInput');
+
+var Fab = React.createClass({displayName: "Fab",
+    render: function () {
+        return(
+            React.createElement("nav", {className: "fabcontainer"}, 
+            React.createElement("button", {className: "buttons"}, "RadioButton"), 
+            React.createElement("button", {className: "buttons"}, "Number"), 
+            React.createElement("button", {className: "buttons"}, "Text"), 
+            React.createElement("button", {className: "buttons fabMainBtn", tooltip: "Share", href: "#"}, "+")
+            )
+        );
+    }
+});
+
+module.exports = Fab;
+},{"react":199}],203:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var UserDetails = require('../common/userDetails');
 
 var FormTemplate = React.createClass({displayName: "FormTemplate",
     PropTypes: {
-        author: React.PropTypes.object.isRequired,
-        onSave: React.PropTypes.func.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        errors: React.PropTypes.object
+        name: React.PropTypes.string.isRequired,
+        formFields: React.PropTypes.object.isRequired
     },
 
-    getInitialState: function() {
-        return {
-            formFields: [
-                { id: '1', name: 'moshe', type: 'text' }
-            ]
-        };
-    },
-
-    addTextBox: function() {
-        this.state.formFields.push({ id: '2', name: 'koren', type: 'text' });
-        this.setState({formFields: this.state.formFields});
+    createFields: function(field, i) {
+        switch (field.type) {
+            case "text":
+            case "number":
+            case "date":
+                return (
+                React.createElement("div", {key: i}, 
+                    React.createElement("label", null, field.name, ": "), 
+                    React.createElement("input", {type: field.type}), 
+                    React.createElement("br", null)
+                )
+                );
+            case "radio":
+                var radioOptions = field.options.map(function (option) {
+                    return { radioGroup: field.name, value: option}
+                });
+                var radioOptionsComponent = radioOptions.map(function (option, i) {
+                    return (
+                        React.createElement("div", {key: i}, 
+                            React.createElement("input", {type: "radio", name: option.radioGroup, value: option.value}), 
+                            React.createElement("span", null, option.value), React.createElement("br", null)
+                        )
+                    );
+                });
+                return (
+                    React.createElement("div", null, 
+                        React.createElement("label", null, field.name, ": "), 
+                        radioOptionsComponent
+                    )
+                );
+            case "UserDetails":
+                return React.createElement(UserDetails, {key: i})
+        }
     },
 
     render: function () {
-        var fieldsToRender = this.state.formFields.map((item) => (
-            React.createElement("div", null, 
-                React.createElement("label", null, item.name, ": "), 
-                React.createElement("input", {key: item.id, type: item.type})
-            )
-        ))
-
         return(
             React.createElement("form", null, 
-                React.createElement("h1", null, "My form"), 
-                fieldsToRender, 
+                React.createElement("h2", null, this.props.name), 
                 React.createElement("br", null), 
-                React.createElement("button", {onClick: this.addTextBox}, "Click Me")
+                this.props.formFields.map(this.createFields)
             )
         );
     }
@@ -33268,7 +33805,7 @@ var FormTemplate = React.createClass({displayName: "FormTemplate",
 
 module.exports = FormTemplate;
 
-},{"../common/textInput":206,"react":199}],202:[function(require,module,exports){
+},{"../common/userDetails":208,"react":199}],204:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33288,7 +33825,7 @@ var FillPage = React.createClass({displayName: "FillPage",
 
 module.exports = FillPage;
 
-},{"react":199,"react-router":29}],203:[function(require,module,exports){
+},{"react":199,"react-router":29}],205:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33308,7 +33845,7 @@ var SignPage = React.createClass({displayName: "SignPage",
 
 module.exports = SignPage;
 
-},{"react":199,"react-router":29}],204:[function(require,module,exports){
+},{"react":199,"react-router":29}],206:[function(require,module,exports){
 /*eslint-disable strict*/
 
 $ = jQuery = require('jquery');
@@ -33332,7 +33869,7 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./common/header":205,"jquery":3,"react":199,"react-router":29}],205:[function(require,module,exports){
+},{"./common/header":207,"jquery":3,"react":199,"react-router":29}],207:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33344,10 +33881,13 @@ var Header = React.createClass({displayName: "Header",
         return(
             React.createElement("nav", {className: "navbar navbar-default"}, 
                 React.createElement("div", {className: "container-fluid"}, 
+                    React.createElement(Link, {to: "/", className: "navbar-brand"}, 
+                        React.createElement("img", {src: "images/form-logo.png"})
+                    ), 
                     React.createElement("ul", {className: "nav navbar-nav"}, 
                         React.createElement("li", null, React.createElement(Link, {to: "create"}, "Create")), 
-                        React.createElement("li", null, React.createElement(Link, {to: "sign"}, "Sign")), 
-                        React.createElement("li", null, React.createElement(Link, {to: "fill"}, "Fill"))
+                        React.createElement("li", null, React.createElement(Link, {to: "fill"}, "Fill")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "sign"}, "Sign"))
                     )
                 )
             )
@@ -33357,48 +33897,53 @@ var Header = React.createClass({displayName: "Header",
 
 module.exports = Header;
 
-},{"react":199,"react-router":29}],206:[function(require,module,exports){
+},{"react":199,"react-router":29}],208:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
 
-var textInput = React.createClass({displayName: "textInput",
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        label: React.PropTypes.string.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        placeholder: React.PropTypes.string,
-        value: React.PropTypes.string,
-        error: React.PropTypes.string
-    },
-
+var UserDetails = React.createClass({displayName: "UserDetails",
     render: function () {
-        var wrapperClass = "form-group";
-        if(this.props.error && this.props.error.length > 0) {
-            wrapperClass += ' ' + 'has-error';
-        }
-
-        return (
-            React.createElement("div", {className: wrapperClass}, 
-                React.createElement("label", {htmlFor: this.props.name}, this.props.label), 
-                React.createElement("div", {className: "field"}, 
-                    React.createElement("input", {type: "text", 
-                    name: this.props.name, 
-                    className: "form-control", 
-                    placeholder: this.props.placeholder, 
-                    ref: this.props.name, 
-                    value: this.props.value, 
-                    onChange: this.props.onChange}), 
-                    React.createElement("div", {className: "input"}, this.props.error)
-                )
+        return(
+            React.createElement("div", null, 
+                React.createElement("label", null, "ID: "), 
+                React.createElement("input", {type: "text", placeholder: "12345678"}), 
+                React.createElement("label", null, "First Name: "), 
+                React.createElement("input", {type: "text", placeholder: "moshe"}), 
+                React.createElement("label", null, "Last Name: "), 
+                React.createElement("input", {type: "text", placeholder: "katz"}), 
+                React.createElement("br", null)
             )
         );
     }
 });
 
-module.exports = textInput;
+module.exports = UserDetails;
 
-},{"react":199}],207:[function(require,module,exports){
+},{"react":199}],209:[function(require,module,exports){
+"use strict";
+
+var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
+
+var HomePage = React.createClass({displayName: "HomePage",
+    render: function() {
+        return (
+            React.createElement("div", {className: "jumbotron"}, 
+                React.createElement("h1", null, "Welcome to Forms Manager"), 
+                React.createElement("h2", null, "What would you like to do?"), 
+                React.createElement(Link, {to: "create", className: "btn btn-primary btn-lg container-fluid"}, "Create"), 
+                React.createElement(Link, {to: "fill", className: "btn btn-primary btn-lg container-fluid"}, "Fill"), 
+                React.createElement(Link, {to: "sign", className: "btn btn-primary btn-lg container-fluid"}, "Sign")
+            )
+        );
+    }
+});
+
+module.exports = HomePage;
+
+},{"react":199,"react-router":29}],210:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33410,7 +33955,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
             React.createElement("div", null, 
                 React.createElement("h1", null, "Page Not Found"), 
                 React.createElement("p", null, "Whoops! Sorry, there is nothing to see here."), 
-                React.createElement("p", null, React.createElement(Link, {to: ""}, "Back to Home"))
+                React.createElement("p", null, React.createElement(Link, {to: "create"}, "Back Home"))
             )
         );
     }
@@ -33418,7 +33963,7 @@ var NotFoundPage = React.createClass({displayName: "NotFoundPage",
 
 module.exports = NotFoundPage;
 
-},{"react":199,"react-router":29}],208:[function(require,module,exports){
+},{"react":199,"react-router":29}],211:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33432,7 +33977,7 @@ Router.run(routes, function (Handler) {
     React.render(React.createElement(Handler, null), document.getElementById('app'));
 });
 
-},{"./routes":209,"react":199,"react-router":29}],209:[function(require,module,exports){
+},{"./routes":212,"react":199,"react-router":29}],212:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -33443,7 +33988,8 @@ var NotFoundRoute = Router.NotFoundRoute;
 
 var routes = (
     React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
-        React.createElement(DefaultRoute, {name: "create", handler: require('./components/CreateFormPage/CreatePage')}), 
+        React.createElement(DefaultRoute, {name: "home", handler: require('./components/homePage')}), 
+        React.createElement(Route, {name: "create", handler: require('./components/CreateFormPage/CreatePage')}), 
         React.createElement(Route, {name: "sign", handler: require('./components/SignFormPage/SignPage')}), 
         React.createElement(Route, {name: "fill", handler: require('./components/FillFormPage/FillPage')}), 
         React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')})
@@ -33452,4 +33998,4 @@ var routes = (
 
 module.exports = routes;
 
-},{"./components/CreateFormPage/CreatePage":200,"./components/FillFormPage/FillPage":202,"./components/SignFormPage/SignPage":203,"./components/app":204,"./components/notFoundPage":207,"react":199,"react-router":29}]},{},[208]);
+},{"./components/CreateFormPage/CreatePage":201,"./components/FillFormPage/FillPage":204,"./components/SignFormPage/SignPage":205,"./components/app":206,"./components/homePage":209,"./components/notFoundPage":210,"react":199,"react-router":29}]},{},[211]);

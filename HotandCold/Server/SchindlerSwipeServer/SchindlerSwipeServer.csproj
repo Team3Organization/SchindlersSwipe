@@ -62,10 +62,13 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
       <Private>True</Private>
     </Reference>
+=======
+>>>>>>> bc468397198bdb543b4ebba5d9fb47a6b1bbf891
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -75,6 +78,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <Reference Include="System.Web.Http.WebHost">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+>>>>>>> bc468397198bdb543b4ebba5d9fb47a6b1bbf891
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -95,7 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+<<<<<<< HEAD
     <None Include="Properties\PublishProfiles\SchindlerSwipe - Web Deploy.pubxml" />
+=======
+>>>>>>> bc468397198bdb543b4ebba5d9fb47a6b1bbf891
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
