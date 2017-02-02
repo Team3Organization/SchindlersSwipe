@@ -13,6 +13,7 @@ var FormTemplate = React.createClass({
         switch (field.type) {
             case "text":
             case "number":
+            case "date":
                 return (
                 <div key={i}>
                     <label>{field.name}: </label>

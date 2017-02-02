@@ -28,6 +28,13 @@ var CreatePage = React.createClass({
         toastr.success('Textbox added succesfully!');
     },
 
+    addDate: function() {
+        var fieldName = prompt("please enter your field's name:");
+        this.state.formFields.push({ name: fieldName, type: 'date' });
+        this.setState({formFields: this.state.formFields});
+        toastr.success('Textbox added succesfully!');
+    },
+
     addNumberPicker: function() {
         var fieldName = prompt("please enter your field's name:");
         this.state.formFields.push({ name: fieldName, type: 'number' });
@@ -61,13 +68,16 @@ var CreatePage = React.createClass({
                 <button className="btn btn-primary btn-lg" onClick={this.createForm}>Create!</button>
                 
                 <FormTemplate name={this.state.name} formFields={this.state.formFields}/><br/>
-                <button className="btn btn-primary btn-md" onClick={this.addTextBox}>Textbox</button> 
-                <button className="btn btn-primary btn-md" onClick={this.addNumberPicker}>NumberPicker</button>
-                <button className="btn btn-primary btn-md" onClick={this.addRadioButton}>RadioButton</button>
-                <button className="btn btn-primary btn-md" onClick={this.addUsersDetails}>UserDetails</button>
-                <br/><br/>
                 <button className="btn dropdown-menu-right" onClick={this.saveForm}>Save</button>
-                <Fab/>
+
+                <nav className="fabcontainer">
+                    <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
+                    <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
+                    <button className="buttons" onClick={this.addDate}>Date</button>
+                    <button className="buttons" onClick={this.addNumberPicker}>Number</button>
+                    <button className="buttons" onClick={this.addTextBox}>Text</button>
+                    <button className="buttons fabMainBtn">+</button>
+                </nav>
             </div>
             
         );
