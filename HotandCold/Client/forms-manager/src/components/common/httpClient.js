@@ -8,7 +8,7 @@ module.exports = function() {
                 p_Callback(anHttpRequest.responseText);
         }
 
-        anHttpRequest.open( "GET", p_Url, true );            
+        anHttpRequest.open( "GET", p_Url, false );            
         anHttpRequest.send( null );
     },
     this.post = function(p_Url, p_Params, p_Callback) {

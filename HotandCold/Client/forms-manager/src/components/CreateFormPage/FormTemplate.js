@@ -16,14 +16,14 @@ var FormTemplate = React.createClass({
             case "date":
                 return (
                 <div key={i}>
-                    <label>{field.name}: </label>
+                    <label>{field.Name}: </label>
                     <input type={field.type}/>
                     <br/>
                 </div>
                 );
             case "radio":
                 var radioOptions = field.extraData[0].options.map(function (option) {
-                    return { radioGroup: field.name, value: option}
+                    return { radioGroup: field.Name, value: option}
                 });
                 var radioOptionsComponent = radioOptions.map(function (option, i) {
                     return (
@@ -35,7 +35,7 @@ var FormTemplate = React.createClass({
                 });
                 return (
                     <div>
-                        <label>{field.name}: </label>
+                        <label>{field.Name}: </label>
                         {radioOptionsComponent}
                     </div>
                 );

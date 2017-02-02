@@ -28,21 +28,21 @@ var CreatePage = React.createClass({
 
     addTextBox: function () {
         var fieldName = prompt("please enter your field's name:");
-        this.state.formFields.push({ name: fieldName, type: 'text' });
+        this.state.formFields.push({ Name: fieldName, type: 'text' });
         this.setState({ formFields: this.state.formFields });
         toastr.success('Textbox added succesfully!');
     },
 
     addDate: function () {
         var fieldName = prompt("please enter your field's name:");
-        this.state.formFields.push({ name: fieldName, type: 'date' });
+        this.state.formFields.push({ Name: fieldName, type: 'date' });
         this.setState({ formFields: this.state.formFields });
         toastr.success('Date added succesfully!');
     },
 
     addNumberPicker: function () {
         var fieldName = prompt("please enter your field's name:");
-        this.state.formFields.push({ name: fieldName, type: 'number' });
+        this.state.formFields.push({ Name: fieldName, type: 'number' });
         this.setState({ formFields: this.state.formFields });
         toastr.success('Number Picker added succesfully!');
     },
@@ -51,7 +51,7 @@ var CreatePage = React.createClass({
         var fieldName = prompt("please enter your field's name:");
         var radioButtonOptions = prompt("pleasr enter the options, seperated with commas:").split(',');
         this.state.formFields.push({ 
-            name: fieldName, 
+            Name: fieldName, 
             type: 'radio', 
             extraData: [
                 { options: radioButtonOptions }
@@ -72,7 +72,7 @@ var CreatePage = React.createClass({
     getData: function() {
         var client = new HttpClient();
 
-        client.get('http://schindlerswipe.azurewebsites.net/api/forms', function(response) {
+        client.get('http://schindlerswipe.azurewebsites.net/api/General/GetAllFormTemplates', function(response) {
             console.log(JSON.parse(response));
         });
     },
@@ -135,9 +135,6 @@ var CreatePage = React.createClass({
                 </div>
                 <button id="createionNextStep">To The Next Step</button>
 
-                <button className="btn btn-primary btn-lg container-fluid" onClick={this.getData}>get</button>
-                <button className="btn btn-primary btn-lg container-fluid" onClick={this.postData}>post</button>
-                <button className="btn btn-primary btn-lg container-fluid" onClick={this.logState}>log state</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.saveForm}>save form</button>
             </div>
 
