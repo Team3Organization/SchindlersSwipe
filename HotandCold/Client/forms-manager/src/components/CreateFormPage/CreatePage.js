@@ -88,7 +88,7 @@ var CreatePage = React.createClass({
     saveForm: function() {
         var client = new HttpClient();
 
-        client.post('http://schindlerswipe.azurewebsites.net/api/forms', null, function(response) {
+        client.post('http://schindlerswipe.azurewebsites.net/api/General/AddNewForm', JSON.stringify(this.state), function(response) {
             console.log(response);
         });
     },
@@ -115,6 +115,7 @@ var CreatePage = React.createClass({
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.getData}>get</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.postData}>post</button>
                 <button className="btn btn-primary btn-lg container-fluid" onClick={this.logState}>log state</button>
+                <button className="btn btn-primary btn-lg container-fluid" onClick={this.saveForm}>save form</button>
             </div>
 
         );
