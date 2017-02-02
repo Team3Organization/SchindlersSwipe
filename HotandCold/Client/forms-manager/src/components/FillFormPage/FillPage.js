@@ -24,7 +24,7 @@ var FillPage = React.createClass({
 
     setTemplatesById: function(p_id) {
          //var template = FormsApi.getTemplateById(p_id);
-         var template = FormsApi.getAllTemplates()[1];
+         var template = FormsApi.getAllTemplates()[2];
          this.setState({name: template.name, formFields: template.formFields});
     },
 
