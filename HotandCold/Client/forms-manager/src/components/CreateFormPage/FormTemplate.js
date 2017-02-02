@@ -22,7 +22,7 @@ var FormTemplate = React.createClass({
                 </div>
                 );
             case "radio":
-                var radioOptions = field.options.map(function (option) {
+                var radioOptions = field.extraData[0].options.map(function (option) {
                     return { radioGroup: field.name, value: option}
                 });
                 var radioOptionsComponent = radioOptions.map(function (option, i) {
