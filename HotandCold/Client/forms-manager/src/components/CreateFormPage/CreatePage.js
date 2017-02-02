@@ -116,11 +116,11 @@ var CreatePage = React.createClass({
                     </div>
 
                     <nav className="fabcontainer">
-                        <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
-                        <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
-                        <button className="buttons" onClick={this.addDate}>Date</button>
-                        <button className="buttons" onClick={this.addNumberPicker}>Number</button>
-                        <button className="buttons" onClick={this.addTextBox}>Text</button>
+                        <button className="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.addUsersDetails}>UserDetails</button>
+                        <button className="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.addRadioButton}>RadioButton</button>
+                        <button className="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.addDate}>Date</button>
+                        <button className="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.addNumberPicker}>Number</button>
+                        <button className="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.addTextBox}>Text</button>
                         <button className="buttons fabMainBtn">+</button>
                     </nav>
                 </div>
