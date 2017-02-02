@@ -112,3 +112,8 @@
   border-radius: 50%;
   border-color: #585858;
 }
+
+.creationNextStep {
+  left: 36%;
+  position: absolute;
+}

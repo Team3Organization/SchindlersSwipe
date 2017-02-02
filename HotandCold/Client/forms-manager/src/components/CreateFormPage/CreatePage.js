@@ -70,7 +70,7 @@ var CreatePage = React.createClass({
                         <FormTemplate name={this.state.name} formFields={this.state.formFields} /><br />
                     </div>
                 </div>
-
+                <button id="createionNextStep">To The Next Step</button>
                 <nav className="fabcontainer">
                     <button className="buttons" onClick={this.addUsersDetails}>UserDetails</button>
                     <button className="buttons" onClick={this.addRadioButton}>RadioButton</button>
