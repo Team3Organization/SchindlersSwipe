@@ -37,7 +37,12 @@ var CreatePage = React.createClass({
     addRadioButton: function() {
         var fieldName = prompt("please enter your field's name:");
         var radioButtonOptions = prompt("pleasr enter the options, seperated with commas:").split(',');
-        this.state.formFields.push({ name: fieldName, type: 'radio', options: radioButtonOptions });
+        this.state.formFields.push({ 
+            name: fieldName, 
+            type: 'radio', 
+            extraData: [
+                { options: radioButtonOptions }
+        ]});
         this.setState({formFields: this.state.formFields});
         toastr.success('radio button added succesfully!');
     },
