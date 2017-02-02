@@ -356,3 +356,11 @@ button.toast-close-button {
   position: fixed;
   top: 50%;
 }
+
+#addChip {
+  color: gray;
+}
+
+#approvalAuthorityCard {
+  min-height: 150px;
+}

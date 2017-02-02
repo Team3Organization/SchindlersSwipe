@@ -10,13 +10,13 @@ var HttpClient = require('../common/httpClient');
 
 var CreatePage = React.createClass({
     PropTypes: {
-        myUser: React.PropTypes.string,
-        allUsers: React.PropTypes.array
     },
     getInitialState: function () {
         return {
             name: "",
-            formFields: []
+            formFields: [],
+            allUsers: [],
+            myUser: ""
         };
     },
 
@@ -98,14 +98,11 @@ var CreatePage = React.createClass({
     },
 
     moveToNextStep: function() {
-        //$('.fabcontainer').disable();
-        //$('#createdForm').disable();
+        var client = new HttpClient();
 
-        // GoToServer and get me
-        this.props.myUser = "chen goren";
-
-        // GoToServer and get all users
-        this.props.allUsers = [];
+        client.get('http://schindlerswipe.azurewebsites.net/api/General/GetAllUsers', function(response) {
+            this.state.allUsers = response;
+        });
     },
 
     render: function () {
@@ -129,25 +126,12 @@ var CreatePage = React.createClass({
                 </div>
                
                 <div className="col-md-2">
-                    <button id="nextStepBtn" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                    <button id="nextStepBtn" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={this.moveToNextStep}>
                         To The Next Step
                     </button>
                 </div>
 
                 <div id="approvalFlowChart" className="col-md-5">
-
-                    <div className="demo-card-wide mdl-card mdl-shadow--2dp">
-                        <div className="mdl-card__title">
-                            <h2 className="mdl-card__title-text">Name:{this.props.myUser}</h2>
-                        </div>
-                        <div className="mdl-card__supporting-text">
-                        </div>
-                        <div className="mdl-card__actions mdl-card--border">
-                            <span className="mdl-chip">
-                                <span className="mdl-chip__text">Roye W</span>
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
